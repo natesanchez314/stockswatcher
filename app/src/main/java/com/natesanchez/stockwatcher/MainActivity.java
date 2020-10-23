@@ -1,9 +1,13 @@
 package com.natesanchez.stockwatcher;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.JsonWriter;
 import android.view.View;
@@ -21,6 +25,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener, View.OnLongClickListener{
 
   private SwipeRefreshLayout swiper;
+  private RecyclerView recyclerView;
+  private StockAdapter stockAdapter;
   private List<Stock> stockList;
 
   @Override
@@ -28,8 +34,20 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
+    readJSON();
+    // recycler view setup
+    recyclerView = findViewById(R.id.recyclerView);
+    stockAdapter = new StockAdapter(stockList, this);
+    recyclerView.setAdapter(stockAdapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    // swiper set up
     swiper = findViewById(R.id.swiper);
-    //swiper.setOnRefreshListener(this);
+    swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        doRefresh();
+      }
+    });
   }
 
   @Override
@@ -39,13 +57,24 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
   @Override
   public boolean onLongClick(View view) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Delete stock");
+    builder.setMessage("Are you sure you want to delete this stock?");
+    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialogInterface, int i) {
+        stockList.remove(recyclerView.getChildLayoutPosition(view));
+        Toast.makeText(getApplicationContext(),"Note stock",Toast.LENGTH_SHORT).show();
+      }
+    });
+    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialogInterface, int i) {
+        Toast.makeText(getApplicationContext(),"Cancelled deletion",Toast.LENGTH_SHORT).show();
+      }
+    });
+    AlertDialog dialog = builder.create();
+    dialog.show();
     return false;
   }
-
-  /*@Override
-  public void onRefresh() {
-    new
-  }*/
 
   private void writeJSON() {
     try {
@@ -95,5 +124,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void doRefresh() {
+
   }
 }
