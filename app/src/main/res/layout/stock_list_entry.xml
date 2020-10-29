@@ -1,23 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/entry_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textColor="@color/hacker_green"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/entry_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="TextView"
+        android:textColor="@color/hacker_green"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/entry_symbol"
+        app:layout_constraintTop_toBottomOf="@+id/entry_symbol"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/entry_latest_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="8dp"
+        android:numeric="decimal"
+        android:text="TextView"
+        android:textColor="@color/hacker_green"
+        app:layout_constraintEnd_toStartOf="@+id/entry_change"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/entry_symbol"
+        app:layout_constraintTop_toTopOf="@+id/entry_symbol" />
+
+    <TextView
+        android:id="@+id/entry_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numeric="decimal"
+        android:text="TextView"
+        android:textColor="@color/hacker_green"
+        app:layout_constraintEnd_toStartOf="@+id/entry_change_percent"
+        app:layout_constraintTop_toTopOf="@+id/entry_symbol" />
+
+    <TextView
+        android:id="@+id/entry_change_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:numeric="signed|decimal"
+        android:text="TextView"
+        android:textColor="@color/hacker_green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/entry_change" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

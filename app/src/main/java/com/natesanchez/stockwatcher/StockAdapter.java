@@ -25,13 +25,18 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder>{
     View stockView = LayoutInflater.from(parent.getContext()).inflate(R.layout.stock_list_entry, parent, false);
     stockView.setOnClickListener(mainAct);
     stockView.setOnLongClickListener(mainAct);
-    return null;
+    return new StockViewHolder(stockView);
   }
 
   @Override
   public void onBindViewHolder(@NonNull StockViewHolder holder, int position) {
     Stock stock = stockList.get(position);
 
+    holder.symbol.setText(stock.getSymbol());
+    holder.companyName.setText(stock.getName());
+    holder.latestPrice.setText(String.format("%.2f", stock.getLatestPrice()));
+    holder.change.setText(String.format("%.2f", stock.getChange()));
+    holder.changePercent.setText(String.format("(%.2f)", stock.getChangePercent()));
   }
 
   @Override
