@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.JsonWriter;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener, View.OnLongClickListener{
@@ -27,7 +30,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
   private SwipeRefreshLayout swiper;
   private RecyclerView recyclerView;
   private StockAdapter stockAdapter;
-  private List<Stock> stockList;
+  private List<Stock> stockList = new ArrayList<>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +38,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     setContentView(R.layout.activity_main);
 
     readJSON();
-    // recycler view setup
-    recyclerView = findViewById(R.id.recyclerView);
-    stockAdapter = new StockAdapter(stockList, this);
-    recyclerView.setAdapter(stockAdapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    stockList.add(new Stock("test1", "test1", 10.0, 10.0, 10.0));
+    stockList.add(new Stock("test2", "test2", 20.0, 20.0, 20.0));
+    stockList.add(new Stock("test3", "test3", 30.0, 30.0, 30.0));
+    stockList.add(new Stock("test4", "test4", 40.0, 40.0, 40.0));
+    stockList.add(new Stock("test5", "test5", 50.0, 50.0, 50.0));
     // swiper set up
     swiper = findViewById(R.id.swiper);
     swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -48,11 +51,22 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         doRefresh();
       }
     });
+    // recycler view setup
+    recyclerView = findViewById(R.id.stockRecycler);
+    stockAdapter = new StockAdapter(stockList, this);
+    recyclerView.setAdapter(stockAdapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_main, menu);
+    return true;
   }
 
   @Override
   public void onClick(View view) {
-
+    Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
   }
 
   @Override
@@ -63,7 +77,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialogInterface, int i) {
         stockList.remove(recyclerView.getChildLayoutPosition(view));
-        Toast.makeText(getApplicationContext(),"Note stock",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"Stock deleted",Toast.LENGTH_SHORT).show();
+        stockAdapter.notifyDataSetChanged();
       }
     });
     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -86,11 +101,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         // save stock object into json object
         jw.beginObject();
         jw.name("symbol").value(s.getSymbol());
-        jw.name("name").value(s.getName());
-        jw.name("date").value(s.getDate().toString());
-        jw.name("isEnabled").value(s.isEnabled());
-        jw.name("type").value(s.getType());
-        jw.name("iexId").value(s.getIexId());
+        jw.name("companyName").value(s.getName());
+        jw.name("latestPrice").value(s.getLatestPrice());
+        jw.name("change").value(s.getChange());
+        jw.name("changePercent").value(s.getChangePercent());
         jw.endObject();
       }
       jw.endArray();
@@ -113,11 +127,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         JSONObject jObj = notesArray.getJSONObject(i);
         Stock s = new Stock(
                 jObj.getString("symbol"),
-                jObj.getString("name"),
-                jObj.getLong("date"),
-                jObj.getBoolean("isEnabled"),
-                jObj.getString("type"),
-                jObj.getInt("iexID")
+                jObj.getString("companyName"),
+                jObj.getDouble("latestPrice"),
+                jObj.getDouble("change"),
+                jObj.getDouble("changePercent")
         );
         //save json object into stock object
       }
@@ -127,6 +140,48 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
   }
 
   private void doRefresh() {
+    Toast.makeText(this, "refresh", Toast.LENGTH_SHORT).show();
+  }
 
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch(item.getItemId()) {
+      case R.id.addStockButton:
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Stock Selection");
+        builder.setMessage("Please enter a Stock Symbol");
+        //builder.se
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialogInterface, int i) {
+            addStock("test");
+          }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialogInterface, int i) {
+            Toast.makeText(getApplicationContext(),"No stock added",Toast.LENGTH_SHORT).show();
+          }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return true;
+      default:
+        Toast.makeText(this, "error adding", Toast.LENGTH_SHORT).show();
+        return false;
+    }
+  }
+
+  private void addStock(String sym) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Make a Selection");
+    //builder.se
+    builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialogInterface, int i) {
+        Toast.makeText(getApplicationContext(),"No stock added",Toast.LENGTH_SHORT).show();
+      }
+    });
+    AlertDialog dialog = builder.create();
+    dialog.show();
+    Toast.makeText(getApplicationContext(),"Stock added",Toast.LENGTH_SHORT).show();
+    stockAdapter.notifyDataSetChanged();
   }
 }

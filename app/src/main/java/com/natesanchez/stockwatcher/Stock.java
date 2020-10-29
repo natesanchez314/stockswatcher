@@ -6,30 +6,26 @@ import java.util.Date;
 public class Stock implements Serializable {
 
   private String symbol;
-  private String name;
-  private Date date;
-  private boolean enabled;
-  private String type;
-  private int iexId;
+  private String companyName;
+  private double latestPrice;
+  private double change;
+  private double changePercent;
 
-  Stock(String s, String n, Long d, boolean e, String t, int i) {
-    this.symbol = s;
-    this.name = n;
-    this.date = new Date(d);
-    this.enabled = e;
-    this.type = t;
-    this.iexId = i;
+  Stock(String sym, String name, double price, double change, double changePercent) {
+    this.symbol = sym;
+    this.companyName = name;
+    this.latestPrice = price;
+    this.change = change;
+    this.changePercent = changePercent;
   }
 
   public String getSymbol() { return symbol; }
 
-  public String getName() { return name; }
+  public String getName() { return companyName; }
 
-  public Date getDate() { return date; }
+  public double getLatestPrice() { return latestPrice; }
 
-  public boolean isEnabled() { return enabled; }
+  public double getChange() { return change; }
 
-  public String getType() { return type; }
-
-  public int getIexId() { return iexId; }
+  public double getChangePercent() { return changePercent; }
 }
