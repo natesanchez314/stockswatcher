@@ -8,12 +8,19 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.JsonWriter;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import com.natesanchez.stockwatcher.apis.SymDownloader;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,6 +43,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    SymDownloader sd = new SymDownloader();
+    new Thread(sd).start();
 
     readJSON();
     stockList.add(new Stock("test1", "test1", 10.0, 10.0, 10.0));
@@ -132,7 +142,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 jObj.getDouble("change"),
                 jObj.getDouble("changePercent")
         );
-        //save json object into stock object
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -140,7 +149,13 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
   }
 
   private void doRefresh() {
+    stockAdapter.notifyDataSetChanged();
+    swiper.setRefreshing(false);
     Toast.makeText(this, "refresh", Toast.LENGTH_SHORT).show();
+  }
+
+  public void doneWithData() {
+    swiper.setRefreshing(false);
   }
 
   @Override
@@ -150,10 +165,14 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Stock Selection");
         builder.setMessage("Please enter a Stock Symbol");
-        //builder.se
+        final EditText et = new EditText(this);
+        et.setInputType(InputType.TYPE_CLASS_TEXT);
+        et.setGravity(Gravity.CENTER_HORIZONTAL);
+        et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+        builder.setView(et);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialogInterface, int i) {
-            addStock("test");
+            addStock(et.getText().toString().trim());
           }
         });
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -173,7 +192,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
   private void addStock(String sym) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle("Make a Selection");
-    //builder.se
+    //builder.setPositiveButton()
     builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialogInterface, int i) {
         Toast.makeText(getApplicationContext(),"No stock added",Toast.LENGTH_SHORT).show();
@@ -183,5 +202,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     dialog.show();
     Toast.makeText(getApplicationContext(),"Stock added",Toast.LENGTH_SHORT).show();
     stockAdapter.notifyDataSetChanged();
+  }
+
+  private boolean checkNetworkConnection() {
+    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+    return netInfo != null && netInfo.isConnectedOrConnecting();
   }
 }

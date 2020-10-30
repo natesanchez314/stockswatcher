@@ -37,6 +37,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder>{
     holder.latestPrice.setText(String.format("%.2f", stock.getLatestPrice()));
     holder.change.setText(String.format("%.2f", stock.getChange()));
     holder.changePercent.setText(String.format("(%.2f)", stock.getChangePercent()));
+    //holder.
   }
 
   @Override
