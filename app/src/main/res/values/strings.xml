@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Stock Watcher</string>
     <string name="json_stocks_file">stocks_save_file.json</string>
+    <string name="iex_token">pk_be772f392c24462ab1922fb2dffd69c8</string>
 </resources>
