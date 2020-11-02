@@ -12,7 +12,7 @@ public class Stock implements Serializable, Comparable<Stock> {
   private double change;
   private double changePercent;
 
-  Stock(String sym, String name, double price, double change, double changePercent) {
+  public Stock(String sym, String name, double price, double change, double changePercent) {
     this.symbol = sym;
     this.companyName = name;
     this.latestPrice = price;
@@ -29,6 +29,12 @@ public class Stock implements Serializable, Comparable<Stock> {
   public double getChange() { return change; }
 
   public double getChangePercent() { return changePercent; }
+
+  public void setLatestPrice(double d) { this.latestPrice = d; }
+
+  public void setChange(double d) { this.change = d; }
+
+  public void setChangePercent(double d) { this.change = d; }
 
   @Override
   public int compareTo(Stock stock) {

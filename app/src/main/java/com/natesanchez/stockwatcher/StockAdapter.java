@@ -1,5 +1,6 @@
 package com.natesanchez.stockwatcher;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder>{
 
   private List<Stock> stockList;
   private MainActivity mainAct;
+  private String priceDown = "#A71D13";
+  private String priceUp = "#28AA2D";
 
   StockAdapter(List<Stock> sList, MainActivity mAct) {
     this.stockList = sList;
@@ -36,8 +39,20 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder>{
     holder.companyName.setText(stock.getName());
     holder.latestPrice.setText(String.format("%.2f", stock.getLatestPrice()));
     holder.change.setText(String.format("%.2f", stock.getChange()));
-    holder.changePercent.setText(String.format("(%.2f)", stock.getChangePercent()));
-    //holder.
+    holder.changePercent.setText(String.format("(%.2f%%)", stock.getChangePercent()));
+    if (stock.getChangePercent() < 0) {
+      holder.symbol.setTextColor(Color.parseColor(priceDown));
+      holder.companyName.setTextColor(Color.parseColor(priceDown));
+      holder.latestPrice.setTextColor(Color.parseColor(priceDown));
+      holder.change.setTextColor(Color.parseColor(priceDown));
+      holder.changePercent.setTextColor(Color.parseColor(priceDown));
+    } else {
+      holder.symbol.setTextColor(Color.parseColor(priceUp));
+      holder.companyName.setTextColor(Color.parseColor(priceUp));
+      holder.latestPrice.setTextColor(Color.parseColor(priceUp));
+      holder.change.setTextColor(Color.parseColor(priceUp));
+      holder.changePercent.setTextColor(Color.parseColor(priceUp));
+    }
   }
 
   @Override
