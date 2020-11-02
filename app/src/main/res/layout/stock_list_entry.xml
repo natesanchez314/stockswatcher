@@ -6,6 +6,15 @@
     android:layout_height="wrap_content"
     android:background="@color/black">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/entry_latest_price"
+        app:layout_constraintEnd_toStartOf="@+id/entry_change"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
     <TextView
         android:id="@+id/entry_symbol"
         android:layout_width="wrap_content"
@@ -36,20 +45,19 @@
         android:id="@+id/entry_latest_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
         android:numeric="decimal"
         android:text="TextView"
         android:textColor="@color/hacker_green"
-        app:layout_constraintEnd_toStartOf="@+id/entry_change"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/entry_symbol"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/entry_symbol" />
 
     <TextView
         android:id="@+id/entry_change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:numeric="decimal"
         android:text="TextView"
         android:textColor="@color/hacker_green"
