@@ -46,12 +46,14 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder>{
       holder.latestPrice.setTextColor(Color.parseColor(priceDown));
       holder.change.setTextColor(Color.parseColor(priceDown));
       holder.changePercent.setTextColor(Color.parseColor(priceDown));
+      holder.arrow.setImageResource(R.drawable.arrow_drop_down_24px);
     } else {
       holder.symbol.setTextColor(Color.parseColor(priceUp));
       holder.companyName.setTextColor(Color.parseColor(priceUp));
       holder.latestPrice.setTextColor(Color.parseColor(priceUp));
       holder.change.setTextColor(Color.parseColor(priceUp));
       holder.changePercent.setTextColor(Color.parseColor(priceUp));
+      holder.arrow.setImageResource(R.drawable.arrow_drop_up_24px);
     }
   }
 

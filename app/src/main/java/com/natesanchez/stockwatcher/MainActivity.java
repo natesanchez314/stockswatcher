@@ -8,8 +8,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.JsonWriter;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
   private RecyclerView recyclerView;
   private StockAdapter stockAdapter;
   private final List<Stock> stockList = new ArrayList<>();
+  private static final String stockURL =  "http://www.marketwatch.com/investing/stock/";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
   @Override
   public void onClick(View view) {
-    Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+    Stock stock = stockList.get(recyclerView.getChildAdapterPosition(view));
+    String intentURL = stockURL.concat(stock.getSymbol());
+    Intent i = new Intent(Intent.ACTION_VIEW);
+    i.setData(Uri.parse(intentURL));
+    startActivity(i);
   }
 
   @Override
@@ -201,7 +208,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     final ArrayList<String> results = SymDownloader.findStocks(sym);
     if (results.size() == 0) {
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder.setTitle("Symbol not found: sym");
+      builder.setTitle(String.format("Symbol not found: %s", sym));
       builder.setMessage("Unable to find a stock with the given symbol");
       AlertDialog dialog = builder.create();
       dialog.show();
