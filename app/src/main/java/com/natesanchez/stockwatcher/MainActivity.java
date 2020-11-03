@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    readJSON();
+    ArrayList<Stock> tempList = readJSON();
     // swiper set up
     swiper = findViewById(R.id.swiper);
     swiper.setOnRefreshListener(this::doRefresh);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     if (!checkNetworkConnection()) {
       notConnectedToTheInternet();
-      for (Stock s : stockList) {
+      for (Stock s : tempList) {
         s.setLatestPrice(0);
         s.setChange(0);
         s.setChangePercent(0);
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     } else {
       SymDownloader sd = new SymDownloader();
       new Thread(sd).start();
-      for (Stock s : stockList) {
+      for (Stock s : tempList) {
         doSelection(s.getSymbol());
       }
     }
@@ -99,12 +99,14 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     builder.setNegativeButton("No", (dialogInterface, i) -> Toast.makeText(getApplicationContext(),"Cancelled deletion",Toast.LENGTH_SHORT).show());
     AlertDialog dialog = builder.create();
     dialog.show();
+    writeJSON();
     return false;
   }
 
   private void writeJSON() {
     try {
-      FileOutputStream fos = getApplicationContext().openFileOutput(getString(R.string.json_stocks_file), Context.MODE_PRIVATE);
+      FileOutputStream fos = getApplicationContext().
+              openFileOutput(getString(R.string.json_stocks_file), Context.MODE_PRIVATE);
       JsonWriter jw = new JsonWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8));
       jw.setIndent("  ");
       jw.beginArray();
@@ -120,16 +122,17 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
       }
       jw.endArray();
       jw.close();
-      Toast.makeText(this, "Stocks saved", Toast.LENGTH_SHORT).show();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  private void readJSON() {
+  private ArrayList<Stock> readJSON() {
+    ArrayList<Stock> tempList = new ArrayList<>();
     try {
-      FileInputStream fis = getApplicationContext().openFileInput(getString(R.string.json_stocks_file));
-      byte[] data = new byte[(int) fis.available()];
+      FileInputStream fis = getApplicationContext().
+              openFileInput(getString(R.string.json_stocks_file));
+      byte[] data = new byte[fis.available()];
       int loaded = fis.read(data);
       fis.close();
       String json = new String(data);
@@ -144,23 +147,20 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 jObj.getDouble("change"),
                 jObj.getDouble("changePercent")
         );
+        tempList.add(s);
       }
+      //stockAdapter.notifyDataSetChanged();
     } catch (Exception e) {
       e.printStackTrace();
     }
+    return tempList;
   }
 
   private void doRefresh() {
     if (!checkNetworkConnection()) {
       notConnectedToTheInternet();
     } else {
-      stockAdapter.notifyDataSetChanged();
-      swiper.setRefreshing(false);
-      for (Stock s : stockList) {
-        String sym = s.getSymbol();
-        stockList.remove(s);
-        doSelection(sym);
-      }
+      updateStocks();
     }
   }
 
@@ -235,21 +235,28 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     dialog.show();
   }
 
-  public void addStock(Stock stock) {
-    if (stockList.contains(stock)) {
+  public void addStock(Stock stockToAdd) {
+    if (stockList.contains(stockToAdd)) {
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       builder.setTitle("Stock already added");
-      builder.setMessage(String.format("The stock %s is already added", stock.getSymbol()));
+      builder.setMessage(String.format("The stock %s is already added", stockToAdd.getSymbol()));
       AlertDialog dialog = builder.create();
       dialog.show();
     } else {
-      stockList.add(stock);
+      stockList.add(stockToAdd);
       Collections.sort(stockList);
       writeJSON();
-      //Toast.makeText(getApplicationContext(), "Stock added", Toast.LENGTH_SHORT).show();
       stockAdapter.notifyDataSetChanged();
     }
   }
 
-  //public void on
+  private void updateStocks() {
+    stockList.clear();
+    ArrayList<Stock> tempList = readJSON();
+    for (Stock s : tempList) {
+      doSelection(s.getSymbol());
+    }
+    stockAdapter.notifyDataSetChanged();
+    swiper.setRefreshing(false);
+  }
 }
