@@ -7,7 +7,7 @@
     android:background="@color/black">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -50,7 +50,7 @@
         android:numeric="decimal"
         android:text="TextView"
         android:textColor="@color/hacker_green"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/arrow"
         app:layout_constraintTop_toTopOf="@+id/entry_symbol" />
 
     <TextView

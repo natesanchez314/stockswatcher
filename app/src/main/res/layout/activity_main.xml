@@ -22,6 +22,7 @@
             android:id="@+id/stockRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollIndicators="right"
             android:scrollbars="vertical" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

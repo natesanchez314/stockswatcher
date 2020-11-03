@@ -1,6 +1,7 @@
 package com.natesanchez.stockwatcher;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ public class StockViewHolder extends RecyclerView.ViewHolder{
   TextView latestPrice;
   TextView change;
   TextView changePercent;
+  ImageView arrow;
 
   public StockViewHolder(@NonNull View itemView) {
     super(itemView);
@@ -22,5 +24,6 @@ public class StockViewHolder extends RecyclerView.ViewHolder{
     latestPrice = itemView.findViewById(R.id.entry_latest_price);
     change = itemView.findViewById(R.id.entry_change);
     changePercent = itemView.findViewById(R.id.entry_change_percent);
+    arrow = itemView.findViewById(R.id.arrow);
   }
 }
